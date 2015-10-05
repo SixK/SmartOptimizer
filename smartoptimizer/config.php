@@ -64,6 +64,7 @@ $settings['jsMinifier'] = 'packer';
 //Minifier to use when parsing css files. Add yours in /minifiers directory, and implement function minify_css($text_to_minify)
 $settings['cssMinifier'] = 'css';
 
+// Following is useless ! :)
 //To use groups effectively, include your files with absolute paths. Define constants for easy access. 
 //define('MY_JS_DIR', $_SERVER['DOCUMENT_ROOT'] . '/tkitt/js/');
 //define('MY_CSS_DIR', $_SERVER['DOCUMENT_ROOT'] . '/tkitt/css/');
@@ -74,3 +75,11 @@ $settings['cssMinifier'] = 'css';
 //	'test.js' => array(MY_JS_DIR.'test.js', MY_JS_DIR.'test2.js'),
 //	'test.css' => array(MY_JS_DIR.'style.css', MY_JS_DIR.'print.css')
 //);
+
+// Here we want site basedir from this address http://localhost/mysite/smartoptimizer/index.php  => http://localhost/mysite
+$settings['myrootpath']=implode('/',array_slice(explode('/',$_SERVER["SCRIPT_FILENAME"]),0, -2));
+
+$smartoptimizerPath=$settings['myrootpath'].'/smartoptimizer';
+$settings['alljs'] = $smartoptimizerPath."/".$settings['cacheDir']."alljs.txt";
+
+$settings['js_group_name'] = 'group.alljs.js';
