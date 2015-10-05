@@ -64,6 +64,9 @@ $settings['jsMinifier'] = 'packer';
 //Minifier to use when parsing css files. Add yours in /minifiers directory, and implement function minify_css($text_to_minify)
 $settings['cssMinifier'] = 'css';
 
+//Minifier to use when parsing html files. Add yours in /minifiers directory, and implement function minify_html($text_to_minify)
+$settings['htmlMinifier'] = 'html';
+
 // Following is useless ! :)
 //To use groups effectively, include your files with absolute paths. Define constants for easy access. 
 //define('MY_JS_DIR', $_SERVER['DOCUMENT_ROOT'] . '/tkitt/js/');
