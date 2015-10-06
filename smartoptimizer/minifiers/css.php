@@ -14,12 +14,9 @@ function convertUrl($url, $count)
 	if (preg_match('@^[^/]+:@', $url)) return $url;
 	
 	$fileType = substr(strrchr($url, '.'), 1);
-        if (isset($mimeTypes[$fileType]))
-                $mimeType = $mimeTypes[$fileType];
-        elseif (function_exists('mime_content_type') && file_exists($fileDir.$url))
-                $mimeType = mime_content_type($fileDir.$url);
-        else
-                $mimeType = null;
+	if (isset($mimeTypes[$fileType])) $mimeType = $mimeTypes[$fileType];
+	elseif (function_exists('mime_content_type')) $mimeType = mime_content_type($url);
+	else $mimeType = null;
 	
 	if (!$settings['embed'] ||
 		!file_exists($fileDir.$url) ||
@@ -37,7 +34,7 @@ function convertUrl($url, $count)
 	
 	$contents = file_get_contents($fileDir.$url);
 	 
-	if ($fileType == 'css') {
+	if ($fileType === 'css') {
 		$oldFileDir = $fileDir;
 		$fileDir = rtrim(dirname($fileDir.$url), '\/').'/';
 		$oldBaseUrl = $baseUrl;
@@ -57,37 +54,37 @@ function minify_css($str) {
 	$inside_block = false;
 	$current_char = '';
 	while ($i+1<strlen($str)) {
-		if ($str[$i]=='"' || $str[$i]=="'") {//quoted string detected
+		if ($str[$i]==='"' || $str[$i]==="'") {//quoted string detected
 			$res .= $quote = $str[$i++];
 			$url = '';
-			while ($i<strlen($str) && $str[$i]!=$quote) {
-				if ($str[$i] == '\\') {
+			while ($i<strlen($str) && $str[$i]!==$quote) {
+				if ($str[$i] === '\\') {
 					$url .= $str[$i++];
 				}
 				$url .= $str[$i++];
 			}
-			if (strtolower(substr($res, -5, 4))=='url(' || strtolower(substr($res, -9, 8)) == '@import ') {
+			if (strtolower(substr($res, -5, 4))==='url(' || strtolower(substr($res, -9, 8)) === '@import ') {
 				$url = convertUrl($url, substr_count($str, $url));
 			}
 			$res .= $url;
 			$res .= $str[$i++];
 			continue;
-		} elseif (strtolower(substr($res, -4))=='url(') {//url detected
+		} elseif (strtolower(substr($res, -4))==='url(') {//url detected
 			$url = '';
 			do {
-				if ($str[$i] == '\\') {
+				if ($str[$i] === '\\') {
 					$url .= $str[$i++];
 				}
 				$url .= $str[$i++];
-			} while ($i<strlen($str) && $str[$i]!=')');
+			} while ($i<strlen($str) && $str[$i]!==')');
 			$url = convertUrl($url, substr_count($str, $url));
 			$res .= $url;
 			$res .= $str[$i++];
 			continue;
-		} elseif ($str[$i].$str[$i+1]=='/*') {//css comment detected
+		} elseif ($str[$i].$str[$i+1]==='/*') {//css comment detected
 			$i+=3;
-			while ($i<strlen($str) && $str[$i-1].$str[$i]!='*/') $i++;
-			if ($current_char == "\n") $str[$i] = "\n";
+			while ($i<strlen($str) && $str[$i-1].$str[$i]!=='*/') $i++;
+			if ($current_char === "\n") $str[$i] = "\n";
 			else $str[$i] = ' ';
 		}
 		
@@ -95,17 +92,17 @@ function minify_css($str) {
 		
 		$current_char = $str[$i];
 		
-		if ($inside_block && $current_char == '}') {
+		if ($inside_block && $current_char === '}') {
 			$inside_block = false;
 		}
 		
-		if ($current_char == '{') {
+		if ($current_char === '{') {
 			$inside_block = true;
 		}
 		
 		if (preg_match('/[\n\r\t ]/', $current_char)) $current_char = " ";
 		
-		if ($current_char == " ") {
+		if ($current_char === " ") {
 			$pattern = $inside_block?'/^[^{};,:\n\r\t ]{2}$/':'/^[^{};,>+\n\r\t ]{2}$/';
 			if (strlen($res) &&	preg_match($pattern, $res[strlen($res)-1].$str[$i+1]))
 				$res .= $current_char;
