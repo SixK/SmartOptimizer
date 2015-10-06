@@ -49,15 +49,16 @@ function convertUrl($url, $count)
 }
 
 function minify_css($str) {
+	$strsize=strlen($str);	
 	$res = '';
 	$i=0;
 	$inside_block = false;
 	$current_char = '';
-	while ($i+1<strlen($str)) {
+	while ($i+1<$strsize) {
 		if ($str[$i]==='"' || $str[$i]==="'") {//quoted string detected
 			$res .= $quote = $str[$i++];
 			$url = '';
-			while ($i<strlen($str) && $str[$i]!==$quote) {
+			while ($i<$strsize && $str[$i]!==$quote) {
 				if ($str[$i] === '\\') {
 					$url .= $str[$i++];
 				}
@@ -76,19 +77,19 @@ function minify_css($str) {
 					$url .= $str[$i++];
 				}
 				$url .= $str[$i++];
-			} while ($i<strlen($str) && $str[$i]!==')');
+			} while ($i<$strsize && $str[$i]!==')');
 			$url = convertUrl($url, substr_count($str, $url));
 			$res .= $url;
 			$res .= $str[$i++];
 			continue;
 		} elseif ($str[$i].$str[$i+1]==='/*') {//css comment detected
 			$i+=3;
-			while ($i<strlen($str) && $str[$i-1].$str[$i]!=='*/') $i++;
+			while ($i<$strsize && $str[$i-1].$str[$i]!=='*/') $i++;
 			if ($current_char === "\n") $str[$i] = "\n";
 			else $str[$i] = ' ';
 		}
 		
-		if (strlen($str) <= $i+1) break;
+		if ($strsize <= $i+1) break;
 		
 		$current_char = $str[$i];
 		
@@ -110,7 +111,7 @@ function minify_css($str) {
 		
 		$i++;
 	}
-	if ($i<strlen($str) && preg_match('/[^\n\r\t ]/', $str[$i])) $res .= $str[$i];
+	if ($i<$strsize && preg_match('/[^\n\r\t ]/', $str[$i])) $res .= $str[$i];
 	return $res;
 }
 ?>
