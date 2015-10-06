@@ -11,39 +11,39 @@ function minify_js($str) {
 		if ($maybe_regex && $str[$i]=='/' && $str[$i+1]!='/' && $str[$i+1]!='*' && @$str[$i-1]!='*') {//regex detected
 			if (strlen($res) && $res[strlen($res)-1] === '/') $res .= ' ';
 			do {
-				if ($str[$i] == '\\') {
+				if ($str[$i] === '\\') {
 					$res .= $str[$i++];
-				} elseif ($str[$i] == '[') {
+				} elseif ($str[$i] === '[') {
 					do {
-						if ($str[$i] == '\\') {
+						if ($str[$i] === '\\') {
 							$res .= $str[$i++];
 						}
 						$res .= $str[$i++];
-					} while ($i<strlen($str) && $str[$i]!=']');
+					} while ($i<strlen($str) && $str[$i]!==']');
 				}
 				$res .= $str[$i++];
-			} while ($i<strlen($str) && $str[$i]!='/');
+			} while ($i<strlen($str) && $str[$i]!=='/');
 			$res .= $str[$i++];
 			$maybe_regex = false;
 			continue;
-		} elseif ($str[$i]=='"' || $str[$i]=="'") {//quoted string detected
+		} elseif ($str[$i]==='"' || $str[$i]==="'") {//quoted string detected
 			$quote = $str[$i];
 			do {
-				if ($str[$i] == '\\') {
+				if ($str[$i] === '\\') {
 					$res .= $str[$i++];
 				}
 				$res .= $str[$i++];
 			} while ($i<strlen($str) && $str[$i]!=$quote);
 			$res .= $str[$i++];
 			continue;
-		} elseif ($str[$i].$str[$i+1]=='/*' && @$str[$i+2]!='@') {//multi-line comment detected
+		} elseif ($str[$i].$str[$i+1]==='/*' && @$str[$i+2]!='@') {//multi-line comment detected
 			$i+=3;
-			while ($i<strlen($str) && $str[$i-1].$str[$i]!='*/') $i++;
+			while ($i<strlen($str) && $str[$i-1].$str[$i]!=='*/') $i++;
 			if ($current_char == "\n") $str[$i] = "\n";
 			else $str[$i] = ' ';
-		} elseif ($str[$i].$str[$i+1]=='//') {//single-line comment detected
+		} elseif ($str[$i].$str[$i+1]==='//') {//single-line comment detected
 			$i+=2;
-			while ($i<strlen($str) && $str[$i]!="\n" && $str[$i]!="\r") $i++;
+			while ($i<strlen($str) && $str[$i]!=="\n" && $str[$i]!=="\r") $i++;
 		}
 		
 
@@ -51,7 +51,7 @@ function minify_js($str) {
 		$LF_needed = false;
 		if (preg_match('/[\n\r\t ]/', $str[$i])) {
 			if (strlen($res) && preg_match('/[\n ]/', $res[strlen($res)-1])) {
-				if ($res[strlen($res)-1] == "\n") $LF_needed = true;
+				if ($res[strlen($res)-1] === "\n") $LF_needed = true;
 				$res = substr($res, 0, -1);
 			}
 			while ($i+1<strlen($str) && preg_match('/[\n\r\t ]/', $str[$i+1])) {
@@ -65,17 +65,17 @@ function minify_js($str) {
 		$current_char = $str[$i];
 		
 		if ($LF_needed) $current_char = "\n";
-		elseif ($current_char == "\t") $current_char = " ";
-		elseif ($current_char == "\r") $current_char = "\n";
+		elseif ($current_char === "\t") $current_char = " ";
+		elseif ($current_char === "\r") $current_char = "\n";
 		
 		// detect unnecessary white spaces
-		if ($current_char == " ") {
+		if ($current_char === " ") {
 			if (strlen($res) &&
 				(
 				preg_match('/^[^(){}[\]=+\-*\/%&|!><?:~^,;"\']{2}$/', $res[strlen($res)-1].$str[$i+1]) ||
 				preg_match('/^(\+\+)|(--)$/', $res[strlen($res)-1].$str[$i+1]) // for example i+ ++j;
 				)) $res .= $current_char;
-		} elseif ($current_char == "\n") {
+		} elseif ($current_char === "\n") {
 			if (strlen($res) &&
 				(
 				preg_match('/^[^({[=+\-*%&|!><?:~^,;\/][^)}\]=+\-*%&|><?:,;\/]$/', $res[strlen($res)-1].$str[$i+1]) ||
