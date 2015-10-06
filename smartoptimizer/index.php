@@ -159,7 +159,6 @@ list($query) = explode('?', urldecode($_SERVER['QUERY_STRING']));
 if ($settings['concatenate'] && substr($query, 0, 6) == 'group.') {
 
 	$fileDir = '';
-	$settings['alljs'];
 	if(file_exists($settings['alljs'])) {
 			
 		$fp=fopen($settings['alljs'],'r');
