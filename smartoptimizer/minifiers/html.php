@@ -1,4 +1,4 @@
-<?
+<?php
 function minify_html($buffer) {
 	global $settings;
 	
@@ -14,7 +14,19 @@ function minify_html($buffer) {
         fclose($fp);
 	
         $html_modified=preg_replace('|<script.*src="(?!http://)(.*)".*></script>|', '',$buffer );   
-        $buffer=preg_replace('|</body>|', '<script defer src="group.alljs.js"></script></body>',$html_modified );
+        $buffer=preg_replace('|</body>|', '<script async src="group.alljs.js"></script></body>',$html_modified );
+        
+        /* here we take automatically all css files found in HTML and we concatenate them. */
+         preg_match_all('|<link href="(.*)".*rel="styleSheet".*type="text/css".*/>|', $buffer, $out);  
+        $cssScripts=$out[1];
+        	
+        $fp=fopen($settings['allcss'],"w");
+        foreach ($cssScripts as $value)	fwrite($fp, $value."\n");
+        fclose($fp);
+	
+        $html_modified=preg_replace('|<link href="(.*)" rel="styleSheet" type="text/css".*/>|', '',$buffer );   
+        $buffer=preg_replace('|<head>|', '<head><link href="group.allcss.css" rel="styleSheet" type="text/css" />',$html_modified );
+        
     }
 
     $search = array(
