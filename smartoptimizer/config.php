@@ -1,7 +1,7 @@
 <?php
-/**
+/*
  * SmartOptimizer Configuration File
- **/
+ */
 
 //base dir (a relative path to the base directory)
 $settings['baseDir'] = '../';
@@ -58,31 +58,37 @@ $settings['clientCache'] = true;
 $settings['clientCacheCheck'] = false;
 
 //Minifier to use when parsing js files. Add yours in /minifiers directory, and implement function minify_js($text_to_minify)
-//We have 2 js minifiers - the original coded by farahdi(js) or Dean Edwards Packer(packer).
 $settings['jsMinifier'] = 'packer';
 
 //Minifier to use when parsing css files. Add yours in /minifiers directory, and implement function minify_css($text_to_minify)
 $settings['cssMinifier'] = 'css';
 
-//Minifier to use when parsing html files. Add yours in /minifiers directory, and implement function minify_html($text_to_minify)
 $settings['htmlMinifier'] = 'html';
 
-// Following is useless ! :)
+/*
 //To use groups effectively, include your files with absolute paths. Define constants for easy access. 
-//define('MY_JS_DIR', $_SERVER['DOCUMENT_ROOT'] . '/tkitt/js/');
-//define('MY_CSS_DIR', $_SERVER['DOCUMENT_ROOT'] . '/tkitt/css/');
-
+define('MY_JS_DIR', $_SERVER['DOCUMENT_ROOT'] . 'cuisinesearch/');
+define('MY_CSS_DIR', $_SERVER['DOCUMENT_ROOT'] . 'cuisinesearch/css/');
+*/
 //groups configuration. Call a group by using /path/to/smartoptimizer/?group.group_name.
 //Tip: If you use 'test.js' as your group name, you'll get a nifty file name like 'group.test.js' 
-//$settings['groups'] = array(
-//	'test.js' => array(MY_JS_DIR.'test.js', MY_JS_DIR.'test2.js'),
-//	'test.css' => array(MY_JS_DIR.'style.css', MY_JS_DIR.'print.css')
-//);
+/*
+$settings['groups'] = array(
+	'alljs.js' => array(MY_JS_DIR.'js/getDataService.js', 
+						MY_JS_DIR.'js/recettes_directive.js', 
+						MY_JS_DIR.'js/search_directive.js',
+						MY_JS_DIR.'js/cloud_directive.js',
+						MY_JS_DIR.'js/paginate_directive3.js'
+						),
+	'test.css' => array(MY_JS_DIR.'style.css', MY_JS_DIR.'print.css')
+);*/
 
-// Here we want site basedir from this address http://localhost/mysite/smartoptimizer/index.php  => http://localhost/mysite
 $settings['myrootpath']=implode('/',array_slice(explode('/',$_SERVER["SCRIPT_FILENAME"]),0, -2));
 
 $smartoptimizerPath=$settings['myrootpath'].'/smartoptimizer';
-$settings['alljs'] = $smartoptimizerPath."/".$settings['cacheDir']."alljs.txt";
 
 $settings['js_group_name'] = 'group.alljs.js';
+$settings['alljs'] = $smartoptimizerPath."/".$settings['cacheDir']."alljs.txt";
+
+$settings['css_group_name'] = 'group.allcss.css';
+$settings['allcss'] = $smartoptimizerPath."/".$settings['cacheDir']."allcss.txt";
