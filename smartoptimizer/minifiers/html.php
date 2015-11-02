@@ -4,16 +4,16 @@ function minify_html($buffer) {
 	
     if ($settings['concatenate'] ) {
         /* here we take automatically all js files found in HTML and we concatenate them.
-            scripts with http:// in path are skipped  */
+            scripts with http:// or https:// in path are skipped  */
         
-        preg_match_all('|<script.*src="(?!http://)(.*)".*></script>|', $buffer, $out);   
+        preg_match_all('|<script.*src="(?!https?://)(.*)".*></script>|', $buffer, $out);   
         $jsScripts=$out[1];
 	
         $fp=fopen($settings['alljs'],"w");
         foreach ($jsScripts as $value)	fwrite($fp, $value."\n");
         fclose($fp);
 	
-        $html_modified=preg_replace('|<script.*src="(?!http://)(.*)".*></script>|', '',$buffer );   
+        $html_modified=preg_replace('|<script.*src="(?!https?://)(.*)".*></script>|', '',$buffer );   
         $buffer=preg_replace('|</body>|', '<script async src="group.alljs.js"></script></body>',$html_modified );
         
         /* here we take automatically all css files found in HTML and we concatenate them. */
